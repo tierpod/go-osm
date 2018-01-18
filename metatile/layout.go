@@ -1,16 +1,17 @@
 package metatile
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"math"
 )
 
-const (
-	// MaxCount is the maximum count of tiles in metatile.
-	MaxCount = 1000
-	// MaxEntrySize is the maximum size of metatile entry in bytes.
-	MaxEntrySize = 2000000
+var (
+	// ErrInvalidIndex is the error returned by Decoder when Tile(x, y) not inside metatile file.
+	ErrInvalidIndex = errors.New("decoder: invalid index")
+	// ErrEmptyData is the error returned by Decoder when Tile has no data (data has zero length).
+	ErrEmptyData = errors.New("decoder: empty data")
 )
 
 type metaEntry struct {
@@ -20,23 +21,23 @@ type metaEntry struct {
 
 // decode tile data for this entry
 func (e metaEntry) decode(r io.ReadSeeker) ([]byte, error) {
-	if e.Size > MaxEntrySize {
-		return nil, fmt.Errorf("metaEntry.decode: entry size (%v) > MaxEntrySize", e.Size)
+	if e.Size == 0 {
+		return nil, ErrEmptyData
 	}
 
 	_, err := r.Seek(int64(e.Offset), 0)
 	if err != nil {
-		return nil, fmt.Errorf("metaEntry.decode: %v", err)
+		return nil, fmt.Errorf("decode: %v", err)
 	}
 
 	buf := make([]byte, e.Size)
 	n, err := r.Read(buf)
 	if err != nil {
-		return nil, fmt.Errorf("metaEntry.decode: %v", err)
+		return nil, fmt.Errorf("decode: %v", err)
 	}
 
 	if int32(n) != e.Size {
-		return nil, fmt.Errorf("metaEntry.decode: invalid tile size: %v != %v", n, e.Size)
+		return nil, fmt.Errorf("decode: invalid tile size: %v != %v", n, e.Size)
 	}
 
 	return buf, nil
@@ -53,6 +54,11 @@ func (m metaLayout) size() int32 {
 	return int32(math.Sqrt(float64(m.Count)))
 }
 
-func (m metaLayout) tileIndex(x, y int32) int32 {
-	return (x-m.X)*m.size() + (y - m.Y)
+func (m metaLayout) tileIndex(x, y int32) (int32, error) {
+	i := (x-m.X)*m.size() + (y - m.Y)
+	if i >= m.Count {
+		return 0, ErrInvalidIndex
+	}
+
+	return i, nil
 }
