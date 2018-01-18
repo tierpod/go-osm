@@ -115,12 +115,14 @@ func ExampleDecoder_Tiles() {
 	}
 
 	for k, v := range data {
-		fmt.Println(k, len(v))
+		if len(v) != 0 {
+			fmt.Println(k, len(v))
+		}
 	}
 
 	// Output:
 	// 0 25093
 	// 1 11330
-	// 2 26298
-	// 3 10439
+	// 8 26298
+	// 9 10439
 }

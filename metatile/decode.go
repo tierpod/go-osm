@@ -31,6 +31,7 @@ func (m *Decoder) Header() (x, y, z, count int32) {
 }
 
 // Entries returns metatile index table (offsets and sizes).
+// TODO: metaEntry?
 func (m *Decoder) Entries() []metaEntry {
 	return m.ml.Index
 }
@@ -58,11 +59,7 @@ func (m *Decoder) Tiles() ([][]byte, error) {
 	for i := range m.ml.Index {
 		entry := m.ml.Index[i]
 		data, err := entry.decode(m.r)
-		if err != nil {
-			// skip tiles with empty data
-			if err == ErrEmptyData {
-				continue
-			}
+		if err != nil && err != ErrEmptyData {
 			return nil, err
 		}
 

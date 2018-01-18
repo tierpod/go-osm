@@ -33,12 +33,12 @@ func encodeHeader(w io.Writer, ml *metaLayout) error {
 	return nil
 }
 
-// Encode encodes tiles data to metatile layout and writes it to w.
-func (m Metatile) Encode(w io.Writer, data Data) error {
+// EncodeWrite encodes tiles data to metatile layout and writes it to w.
+func (m Metatile) EncodeWrite(w io.Writer, data [][]byte) error {
 	mSize := MaxSize * MaxSize
 
-	if len(data) < Area {
-		return fmt.Errorf("Metatile.Write: data size: %v < %v", len(data), mSize)
+	if len(data) != Area {
+		return fmt.Errorf("wrong index array size: %v < %v", len(data), mSize)
 	}
 
 	ml := &metaLayout{
@@ -54,9 +54,6 @@ func (m Metatile) Encode(w io.Writer, data Data) error {
 	for i := 0; i < mSize; i++ {
 		tile := data[i]
 		s := int32(len(tile))
-		if s > MaxEntrySize {
-			return fmt.Errorf("Metatile.Write: entry size (%v) > MaxEntrySize", s)
-		}
 
 		ml.Index = append(ml.Index, metaEntry{
 			Offset: offset,
@@ -69,15 +66,13 @@ func (m Metatile) Encode(w io.Writer, data Data) error {
 
 	// encode and write headers
 	if err := encodeHeader(w, ml); err != nil {
-		return fmt.Errorf("encodeMetatile: %v", err)
+		return fmt.Errorf("EncodeMetatile: %v", err)
 	}
 
 	// encode and write data
-	for i := 0; i < len(data); i++ {
-		tile := data[i]
-
-		if _, err := w.Write(tile); err != nil {
-			return fmt.Errorf("encodeMetatile: %v", err)
+	for _, d := range data {
+		if _, err := w.Write(d); err != nil {
+			return fmt.Errorf("EncodeMetatile: %v", err)
 		}
 	}
 
