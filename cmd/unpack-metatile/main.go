@@ -19,11 +19,14 @@ const usage = `Unpack tiles data from metatiles to directory.
 Usage: unpack-metatiles -dir DIR [-ext EXT] /path/to/file1 [path/to/file2]
 `
 
+var version string
+
 func main() {
 	// Command line flags
 	var (
-		flagDir string
-		flagExt string
+		flagDir     string
+		flagExt     string
+		flagVersion bool
 	)
 
 	flag.Usage = func() {
@@ -33,8 +36,14 @@ func main() {
 
 	flag.StringVar(&flagDir, "dir", "", "output directory")
 	flag.StringVar(&flagExt, "ext", defaultExt, "append extension")
+	flag.BoolVar(&flagVersion, "v", false, "Show version and exit")
 	flag.Parse()
 	files := flag.Args()
+
+	if flagVersion {
+		fmt.Printf("Version: %v\n", version)
+		os.Exit(0)
+	}
 
 	if flagDir == "" {
 		fmt.Println("-dir is not set")
