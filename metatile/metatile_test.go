@@ -35,13 +35,13 @@ func ExampleMetatile_Size() {
 	// 8 8
 }
 
-func ExampleXYOffset() {
+func ExampleXYToIndex() {
 	xx := []int{0, 1}
 	yy := []int{0, 1}
 
 	for x := range xx {
 		for y := range yy {
-			offset := XYOffset(x, y)
+			offset := XYToIndex(x, y)
 			fmt.Printf("(%v, %v): %v\n", x, y, offset)
 		}
 	}
@@ -51,6 +51,21 @@ func ExampleXYOffset() {
 	// (0, 1): 1
 	// (1, 0): 8
 	// (1, 1): 9
+}
+
+func ExampleIndexToXY() {
+	ii := []int{0, 1, 8, 9}
+
+	for _, i := range ii {
+		x, y := IndexToXY(i)
+		fmt.Printf("%v: (%v, %v)\n", i, x, y)
+	}
+
+	// Output:
+	// 0: (0, 0)
+	// 1: (0, 1)
+	// 8: (1, 0)
+	// 9: (1, 1)
 }
 
 func ExampleNewFromURL() {

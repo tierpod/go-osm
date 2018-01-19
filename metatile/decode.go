@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+
+	"github.com/tierpod/go-osm/point"
 )
 
 // Decoder is the metatile file decoder wrapper.
@@ -30,6 +32,11 @@ func (m *Decoder) Header() (x, y, z, count int32) {
 	return m.ml.X, m.ml.Y, m.ml.Z, m.ml.Count
 }
 
+// Size returns metatile size.
+func (m *Decoder) Size() int {
+	return int(m.ml.size())
+}
+
 // Entries returns metatile index table (offsets and sizes).
 // TODO: metaEntry?
 func (m *Decoder) Entries() []metaEntry {
@@ -52,7 +59,8 @@ func (m *Decoder) Tile(x, y int) ([]byte, error) {
 	return data, nil
 }
 
-// Tiles reads data for all tiles in metatile and returns none-empty data.
+// Tiles reads data for all tiles in metatile and returns all data as array of data (includes empty
+// data).
 func (m *Decoder) Tiles() ([][]byte, error) {
 	var tiles [][]byte
 
@@ -67,6 +75,29 @@ func (m *Decoder) Tiles() ([][]byte, error) {
 	}
 
 	return tiles, nil
+}
+
+// TilesMap reads data for all tiles in metatile and returns only none-empty data as map.
+func (m *Decoder) TilesMap() (map[point.ZXY][]byte, error) {
+	r := make(map[point.ZXY][]byte)
+
+	for i := range m.ml.Index {
+		entry := m.ml.Index[i]
+		data, err := entry.decode(m.r)
+		if err != nil && err != ErrEmptyData {
+			return nil, err
+		}
+
+		if len(data) == 0 {
+			continue
+		}
+
+		x, y := IndexToXY(i)
+		p := point.ZXY{Z: int(m.ml.Z), X: int(m.ml.X) + x, Y: int(m.ml.Y) + y}
+		r[p] = data
+	}
+
+	return r, nil
 }
 
 // decodeHeader reads metatile from r and decodes header to metaLayout struct.
@@ -105,4 +136,17 @@ func decodeHeader(r io.Reader) (*metaLayout, error) {
 	}
 
 	return ml, nil
+}
+
+// XYToIndex returns offset of tile data inside metatile.
+func XYToIndex(x, y int) int {
+	mask := MaxSize - 1
+	return (x&mask)*MaxSize + (y & mask)
+}
+
+// IndexToXY returns (x, y) coordinates from inex.
+func IndexToXY(i int) (x, y int) {
+	x = i / MaxSize
+	y = i % MaxSize
+	return x, y
 }

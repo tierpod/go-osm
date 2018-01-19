@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
+
+	"github.com/tierpod/go-osm/point"
 )
 
 func TestDecoder(t *testing.T) {
@@ -70,6 +72,11 @@ func ExampleDecoder_Tile() {
 		return
 	}
 
+	// print header and size
+	z, x, y, count := d.Header()
+	size := d.Size()
+	fmt.Println(z, x, y, count, size)
+
 	// tile exist in metatile and has data
 	data, err := d.Tile(1, 1)
 	if err != nil {
@@ -90,6 +97,7 @@ func ExampleDecoder_Tile() {
 	}
 
 	// Output:
+	// 0 0 1 64 8
 	// 10439
 	// decoder: empty data
 	// decoder: invalid index
@@ -125,4 +133,45 @@ func ExampleDecoder_Tiles() {
 	// 1 11330
 	// 8 26298
 	// 9 10439
+}
+
+func ExampleDecoder_TilesMap() {
+	f, err := os.Open("testdata/0.meta")
+	if err != nil {
+		fmt.Printf("got error %v\n", err)
+	}
+	defer f.Close()
+
+	d, err := NewDecoder(f)
+	if err != nil {
+		fmt.Printf("got error: %v\n", err)
+		return
+	}
+
+	data, err := d.TilesMap()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(len(data))
+
+	points := []point.ZXY{
+		point.ZXY{Z: 1, X: 0, Y: 0},
+		point.ZXY{Z: 1, X: 0, Y: 1},
+		point.ZXY{Z: 1, X: 1, Y: 0},
+		point.ZXY{Z: 1, X: 1, Y: 1},
+		point.ZXY{Z: 99, X: 99, Y: 99},
+	}
+	for _, p := range points {
+		fmt.Printf("%v %v\n", p, len(data[p]))
+	}
+
+	// Output:
+	// 4
+	// {Z:1 X:0 Y:0} 25093
+	// {Z:1 X:0 Y:1} 11330
+	// {Z:1 X:1 Y:0} 26298
+	// {Z:1 X:1 Y:1} 10439
+	// {Z:99 X:99 Y:99} 0
 }

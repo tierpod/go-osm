@@ -57,12 +57,6 @@ func (m Metatile) Size() int {
 // Data is the array of tile data with size Area.
 type Data [Area]tile.Data
 
-// XYOffset returns offset of tile data inside metatile.
-func XYOffset(x, y int) int {
-	mask := MaxSize - 1
-	return (x&mask)*MaxSize + (y & mask)
-}
-
 var reMetatile = regexp.MustCompile(`(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta`)
 
 // NewFromURL creates Metatile from url.
