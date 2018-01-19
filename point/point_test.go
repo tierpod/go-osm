@@ -3,7 +3,7 @@ package point
 import "fmt"
 
 func ExampleLatLong_ToZXY() {
-	p := ZXY{Zoom: 10, X: 697, Y: 321}
+	p := ZXY{Z: 10, X: 697, Y: 321}
 	fmt.Println(p.ToLatLong())
 	// Output:
 	// {Lat:55.578344672182055 Long:65.0390625}
@@ -13,7 +13,7 @@ func ExampleZXY_ToLatLong() {
 	p := LatLong{Lat: 55.578344672182055, Long: 65.0390625}
 	fmt.Println(p.ToZXY(10))
 	// Output:
-	// {Zoom:10 X:697 Y:321}
+	// {Z:10 X:697 Y:321}
 }
 
 func ExampleZXYBox() {
@@ -25,26 +25,26 @@ func ExampleZXYBox() {
 		fmt.Println(p)
 	}
 	// Output:
-	// {Zoom:5 X:19 Y:12}
-	// {Zoom:5 X:19 Y:13}
-	// {Zoom:5 X:20 Y:12}
-	// {Zoom:5 X:20 Y:13}
-	// {Zoom:5 X:21 Y:12}
-	// {Zoom:5 X:21 Y:13}
-	// {Zoom:6 X:39 Y:24}
-	// {Zoom:6 X:39 Y:25}
-	// {Zoom:6 X:39 Y:26}
-	// {Zoom:6 X:39 Y:27}
-	// {Zoom:6 X:40 Y:24}
-	// {Zoom:6 X:40 Y:25}
-	// {Zoom:6 X:40 Y:26}
-	// {Zoom:6 X:40 Y:27}
-	// {Zoom:6 X:41 Y:24}
-	// {Zoom:6 X:41 Y:25}
-	// {Zoom:6 X:41 Y:26}
-	// {Zoom:6 X:41 Y:27}
-	// {Zoom:6 X:42 Y:24}
-	// {Zoom:6 X:42 Y:25}
-	// {Zoom:6 X:42 Y:26}
-	// {Zoom:6 X:42 Y:27}
+	// {Z:5 X:19 Y:12}
+	// {Z:5 X:19 Y:13}
+	// {Z:5 X:20 Y:12}
+	// {Z:5 X:20 Y:13}
+	// {Z:5 X:21 Y:12}
+	// {Z:5 X:21 Y:13}
+	// {Z:6 X:39 Y:24}
+	// {Z:6 X:39 Y:25}
+	// {Z:6 X:39 Y:26}
+	// {Z:6 X:39 Y:27}
+	// {Z:6 X:40 Y:24}
+	// {Z:6 X:40 Y:25}
+	// {Z:6 X:40 Y:26}
+	// {Z:6 X:40 Y:27}
+	// {Z:6 X:41 Y:24}
+	// {Z:6 X:41 Y:25}
+	// {Z:6 X:41 Y:26}
+	// {Z:6 X:41 Y:27}
+	// {Z:6 X:42 Y:24}
+	// {Z:6 X:42 Y:25}
+	// {Z:6 X:42 Y:26}
+	// {Z:6 X:42 Y:27}
 }

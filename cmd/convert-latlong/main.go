@@ -156,7 +156,7 @@ func main() {
 
 	filepathPrev := ""
 	for p := range pCh {
-		t := tile.New(p.Zoom, p.X, p.Y, flagExt, "")
+		t := tile.New(p.Z, p.X, p.Y, flagExt, "")
 		if flagMeta {
 			mt := metatile.NewFromTile(t)
 			filepath := mt.Filepath(flagPrefix)
