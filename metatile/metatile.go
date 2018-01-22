@@ -54,6 +54,19 @@ func (m Metatile) Size() int {
 	return MaxSize
 }
 
+// XYBox returns arrays of x and y coordinates contains inside metatile.
+func (m Metatile) XYBox() (xx []int, yy []int) {
+	for x := m.X; x < m.X+m.Size(); x++ {
+		xx = append(xx, x)
+	}
+
+	for y := m.Y; y < m.Y+m.Size(); y++ {
+		yy = append(yy, y)
+	}
+
+	return xx, yy
+}
+
 // Data is the array of tile data with size Area.
 type Data [Area]tile.Data
 

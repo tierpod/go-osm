@@ -102,3 +102,17 @@ func ExampleNewFromTile() {
 	// Metatile{Zoom:10 Hashes:[128 180 33 0 0] Style: Ext:.meta X:696 Y:320}
 	// /var/lib/mod_tile/10/0/0/33/180/128.meta
 }
+
+func ExampleMetatile_XYBox() {
+	t := tile.Tile{Zoom: 1, X: 1, Y: 1, Ext: ".png"}
+	mt := NewFromTile(t)
+	fmt.Println(mt.XYBox())
+
+	t = tile.Tile{Zoom: 10, X: 697, Y: 321, Ext: ".png"}
+	mt = NewFromTile(t)
+	fmt.Println(mt.XYBox())
+
+	// Output:
+	// [0 1] [0 1]
+	// [696 697 698 699 700 701 702 703] [320 321 322 323 324 325 326 327]
+}
