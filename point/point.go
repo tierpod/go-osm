@@ -41,7 +41,7 @@ func (p LatLong) ToZXY(zoom int) ZXY {
 	return ZXY{Z: zoom, X: x, Y: y}
 }
 
-// ZXYBox converts LatLongs inside box to ZXY coordinates for each zoom in zooms.
+// ZXYBox converts LatLongs inside box to ZXY coordinates for each zoom in zooms. Returns channel of ZXY.
 func ZXYBox(zooms []int, p1 LatLong, p2 LatLong) <-chan (ZXY) {
 	ch := make(chan ZXY)
 
