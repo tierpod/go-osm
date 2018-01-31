@@ -17,9 +17,6 @@ type Tile struct {
 	Style string
 }
 
-// Data is the Tile data.
-type Data []byte
-
 func (t Tile) String() string {
 	return fmt.Sprintf("Tile{Zoom:%v X:%v Y:%v Ext:%v Style:%v}", t.Zoom, t.X, t.Y, t.Ext, t.Style)
 }
