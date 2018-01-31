@@ -26,22 +26,22 @@ const (
 type Metatile struct {
 	Zoom   int
 	Style  string
-	Hashes hashes
+	hashes hashes
 	X, Y   int
 }
 
 func (m Metatile) String() string {
-	return fmt.Sprintf("Metatile{Zoom:%v Hashes:%v Style:%v Ext:%v X:%v Y:%v}", m.Zoom, m.Hashes, m.Style, Ext, m.X, m.Y)
+	return fmt.Sprintf("Metatile{Zoom:%v X:%v Y:%v Style:%v Ext:%v}", m.Zoom, m.X, m.Y, m.Style, Ext)
 }
 
 // Filepath returns metatile file path, based on basedir and coordinates.
 func (m Metatile) Filepath(basedir string) string {
 	zoom := strconv.Itoa(m.Zoom)
-	h0 := strconv.Itoa(m.Hashes[0]) + Ext
-	h1 := strconv.Itoa(m.Hashes[1])
-	h2 := strconv.Itoa(m.Hashes[2])
-	h3 := strconv.Itoa(m.Hashes[3])
-	h4 := strconv.Itoa(m.Hashes[4])
+	h0 := strconv.Itoa(m.hashes[0]) + Ext
+	h1 := strconv.Itoa(m.hashes[1])
+	h2 := strconv.Itoa(m.hashes[2])
+	h3 := strconv.Itoa(m.hashes[3])
+	h4 := strconv.Itoa(m.hashes[4])
 	return path.Join(basedir, m.Style, zoom, h4, h3, h2, h1, h0)
 }
 
@@ -67,8 +67,18 @@ func (m Metatile) XYBox() (xx []int, yy []int) {
 	return xx, yy
 }
 
-// Data is the array of tile data with size Area.
-type Data [Area]tile.Data
+// New creates Metatile from (z, x, y) coordinates and style.
+func New(z, x, y int, style string) Metatile {
+	h := xyToHashes(x, y)
+	mx, my := h.XY()
+	return Metatile{
+		Style:  style,
+		Zoom:   z,
+		hashes: h,
+		X:      mx,
+		Y:      my,
+	}
+}
 
 var reMetatile = regexp.MustCompile(`(\w+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)/(\d+)\.meta`)
 
@@ -92,7 +102,7 @@ func NewFromURL(url string) (Metatile, error) {
 	return Metatile{
 		Style:  items[1],
 		Zoom:   zoom,
-		Hashes: h,
+		hashes: h,
 		X:      x,
 		Y:      y,
 	}, nil
@@ -100,13 +110,5 @@ func NewFromURL(url string) (Metatile, error) {
 
 // NewFromTile creates Metatile from Tile.
 func NewFromTile(t tile.Tile) Metatile {
-	h := xyToHashes(t.X, t.Y)
-	x, y := h.XY()
-	return Metatile{
-		Style:  t.Style,
-		Zoom:   t.Zoom,
-		Hashes: h,
-		X:      x,
-		Y:      y,
-	}
+	return New(t.Zoom, t.X, t.Y, t.Style)
 }

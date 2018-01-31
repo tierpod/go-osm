@@ -8,13 +8,9 @@ import (
 
 func ExampleMetatile_Filepath() {
 	hashes := [5]int{1, 2, 3, 4, 5}
-	mt := Metatile{Zoom: 10, Hashes: hashes, Style: "mapname", X: 0, Y: 0}
-
-	filepath := mt.Filepath("")
-	fmt.Println(filepath)
-
-	filepath = mt.Filepath("/var/lib/mod_tile")
-	fmt.Println(filepath)
+	mt := Metatile{Zoom: 10, hashes: hashes, Style: "mapname", X: 0, Y: 0}
+	fmt.Println(mt.Filepath(""))
+	fmt.Println(mt.Filepath("/var/lib/mod_tile"))
 
 	// Output:
 	// mapname/10/5/4/3/2/1.meta
@@ -86,10 +82,20 @@ func ExampleNewFromURL() {
 	}
 
 	// Output:
-	// Metatile{Zoom:10 Hashes:[128 180 33 0 0] Style:map Ext:.meta X:696 Y:320}
-	// Metatile{Zoom:10 Hashes:[128 180 33 0 0] Style:map Ext:.meta X:696 Y:320}
-	// Metatile{Zoom:10 Hashes:[128 180 33 0 0] Style:map Ext:.meta X:696 Y:320}
+	// Metatile{Zoom:10 X:696 Y:320 Style:map Ext:.meta}
+	// Metatile{Zoom:10 X:696 Y:320 Style:map Ext:.meta}
+	// Metatile{Zoom:10 X:696 Y:320 Style:map Ext:.meta}
 	// error: could not parse url string to Metatile struct
+}
+
+func ExampleNew() {
+	mt := New(10, 696, 320, "mapname")
+	fmt.Println(mt)
+	fmt.Println(mt.Filepath("/var/lib/mod_tile"))
+
+	// Output:
+	// Metatile{Zoom:10 X:696 Y:320 Style:mapname Ext:.meta}
+	// /var/lib/mod_tile/mapname/10/0/0/33/180/128.meta
 }
 
 func ExampleNewFromTile() {
@@ -99,17 +105,15 @@ func ExampleNewFromTile() {
 	fmt.Println(mt.Filepath("/var/lib/mod_tile"))
 
 	// Output:
-	// Metatile{Zoom:10 Hashes:[128 180 33 0 0] Style: Ext:.meta X:696 Y:320}
+	// Metatile{Zoom:10 X:696 Y:320 Style: Ext:.meta}
 	// /var/lib/mod_tile/10/0/0/33/180/128.meta
 }
 
 func ExampleMetatile_XYBox() {
-	t := tile.Tile{Zoom: 1, X: 1, Y: 1, Ext: ".png"}
-	mt := NewFromTile(t)
+	mt := New(1, 1, 1, "")
 	fmt.Println(mt.XYBox())
 
-	t = tile.Tile{Zoom: 10, X: 697, Y: 321, Ext: ".png"}
-	mt = NewFromTile(t)
+	mt = New(10, 697, 321, "")
 	fmt.Println(mt.XYBox())
 
 	// Output:
