@@ -37,9 +37,11 @@ func (m *Decoder) Size() int {
 	return int(m.ml.size())
 }
 
+// Entries is the array of metaEntry.
+type Entries []metaEntry
+
 // Entries returns metatile index table (offsets and sizes).
-// TODO: metaEntry?
-func (m *Decoder) Entries() []metaEntry {
+func (m *Decoder) Entries() Entries {
 	return m.ml.Index
 }
 
@@ -64,8 +66,7 @@ func (m *Decoder) Tile(x, y int) ([]byte, error) {
 func (m *Decoder) Tiles() ([][]byte, error) {
 	var tiles [][]byte
 
-	for i := range m.ml.Index {
-		entry := m.ml.Index[i]
+	for _, entry := range m.ml.Index {
 		data, err := entry.decode(m.r)
 		if err != nil && err != ErrEmptyData {
 			return nil, err
@@ -81,8 +82,7 @@ func (m *Decoder) Tiles() ([][]byte, error) {
 func (m *Decoder) TilesMap() (map[point.ZXY][]byte, error) {
 	r := make(map[point.ZXY][]byte)
 
-	for i := range m.ml.Index {
-		entry := m.ml.Index[i]
+	for i, entry := range m.ml.Index {
 		data, err := entry.decode(m.r)
 		if err != nil && err != ErrEmptyData {
 			return nil, err
