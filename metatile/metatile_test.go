@@ -82,9 +82,9 @@ func ExampleNewFromURL() {
 	}
 
 	// Output:
-	// Metatile{Zoom:10 X:696 Y:320 Style:map Ext:.meta}
-	// Metatile{Zoom:10 X:696 Y:320 Style:map Ext:.meta}
-	// Metatile{Zoom:10 X:696 Y:320 Style:map Ext:.meta}
+	// Metatile{Zoom:10 X:696-703 Y:320-327 Style:map Ext:.meta}
+	// Metatile{Zoom:10 X:696-703 Y:320-327 Style:map Ext:.meta}
+	// Metatile{Zoom:10 X:696-703 Y:320-327 Style:map Ext:.meta}
 	// error: could not parse url string to Metatile struct
 }
 
@@ -94,7 +94,7 @@ func ExampleNew() {
 	fmt.Println(mt.Filepath("/var/lib/mod_tile"))
 
 	// Output:
-	// Metatile{Zoom:10 X:696 Y:320 Style:mapname Ext:.meta}
+	// Metatile{Zoom:10 X:696-703 Y:320-327 Style:mapname Ext:.meta}
 	// /var/lib/mod_tile/mapname/10/0/0/33/180/128.meta
 }
 
@@ -105,7 +105,7 @@ func ExampleNewFromTile() {
 	fmt.Println(mt.Filepath("/var/lib/mod_tile"))
 
 	// Output:
-	// Metatile{Zoom:10 X:696 Y:320 Style: Ext:.meta}
+	// Metatile{Zoom:10 X:696-703 Y:320-327 Style: Ext:.meta}
 	// /var/lib/mod_tile/10/0/0/33/180/128.meta
 }
 

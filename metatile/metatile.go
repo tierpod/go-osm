@@ -31,7 +31,8 @@ type Metatile struct {
 }
 
 func (m Metatile) String() string {
-	return fmt.Sprintf("Metatile{Zoom:%v X:%v Y:%v Style:%v Ext:%v}", m.Zoom, m.X, m.Y, m.Style, Ext)
+	s := m.Size() - 1
+	return fmt.Sprintf("Metatile{Zoom:%v X:%v-%v Y:%v-%v Style:%v Ext:%v}", m.Zoom, m.X, m.X+s, m.Y, m.Y+s, m.Style, Ext)
 }
 
 // Filepath returns metatile file path, based on basedir and coordinates.
