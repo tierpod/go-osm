@@ -152,22 +152,31 @@ func main() {
 	p2 := point.LatLong{Lat: flagLat.min, Long: flagLong.max}
 	zooms := makeIntSlice(flagZooms.min, flagZooms.max+1)
 
-	pCh := point.ZXYBox(zooms, p1, p2)
+	// swap points if wrong order
+	if p1.Lat < p2.Lat {
+		p1, p2 = p2, p1
+	}
 
 	filepathPrev := ""
-	for p := range pCh {
-		t := tile.New(p.Z, p.X, p.Y, flagExt, "")
-		if flagMeta {
-			mt := metatile.NewFromTile(t)
-			filepath := mt.Filepath(flagPrefix)
-			// skip filepath if same as previous
-			if filepath == filepathPrev {
-				continue
+	for _, z := range zooms {
+		zxy1 := p1.ToZXY(z)
+		zxy2 := p2.ToZXY(z)
+		for x := zxy1.X; x <= zxy2.X; x++ {
+			for y := zxy2.Y; y <= zxy2.Y; y++ {
+				t := tile.New(z, x, y, flagExt, "")
+				if flagMeta {
+					mt := metatile.NewFromTile(t)
+					filepath := mt.Filepath(flagPrefix)
+					// skip filepath if same as previous
+					if filepath == filepathPrev {
+						continue
+					}
+					fmt.Println(filepathPrev)
+					filepathPrev = filepath
+				} else {
+					fmt.Println(t.Filepath(flagPrefix))
+				}
 			}
-			fmt.Println(filepathPrev)
-			filepathPrev = filepath
-		} else {
-			fmt.Println(t.Filepath(flagPrefix))
 		}
 	}
 }
