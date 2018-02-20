@@ -21,31 +21,31 @@ func TestDecoder(t *testing.T) {
 	}
 
 	// check header
-	z, x, y, count := d.Header()
-	if z != 0 || x != 0 || y != 1 || count != 64 {
-		t.Errorf("got wrong header: z:%v(0) x:%v(0) y:%v(0) count:%v(64)", z, x, y, count)
+	l := d.Layout()
+	if l.Z != 0 || l.X != 0 || l.Y != 1 || l.Count != 64 {
+		t.Errorf("got wrong header: z:%v(0) x:%v(0) y:%v(0) count:%v(64)", l.Z, l.X, l.Y, l.Count)
 	}
 
 	// check entries table
 	e := d.Entries()
 	validEntries := []struct {
 		index int
-		entry metaEntry
+		entry Entry
 	}{
-		{0, metaEntry{532, 25093}},
-		{1, metaEntry{25625, 11330}},
-		{2, metaEntry{36955, 0}},
-		{8, metaEntry{36955, 26298}},
-		{9, metaEntry{63253, 10439}},
-		{10, metaEntry{73692, 0}},
-		{20, metaEntry{73692, 0}},
-		{40, metaEntry{73692, 0}},
-		{63, metaEntry{73692, 0}},
+		{0, Entry{532, 25093}},
+		{1, Entry{25625, 11330}},
+		{2, Entry{36955, 0}},
+		{8, Entry{36955, 26298}},
+		{9, Entry{63253, 10439}},
+		{10, Entry{73692, 0}},
+		{20, Entry{73692, 0}},
+		{40, Entry{73692, 0}},
+		{63, Entry{73692, 0}},
 	}
 
 	for _, tt := range validEntries {
 		if tt.entry != e[tt.index] {
-			t.Errorf("got wrong metaEntry value")
+			t.Errorf("got wrong Entry value")
 		}
 	}
 
@@ -73,9 +73,9 @@ func ExampleDecoder_Tile() {
 	}
 
 	// print header and size
-	z, x, y, count := d.Header()
+	l := d.Layout()
 	size := d.Size()
-	fmt.Println(z, x, y, count, size)
+	fmt.Println(l.Z, l.X, l.Y, l.Count, size)
 
 	// tile exist in metatile and has data
 	data, err := d.Tile(1, 1)
